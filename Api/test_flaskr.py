@@ -40,27 +40,26 @@ class PlantTestCase(unittest.TestCase):
         self.assertEqual(data["success"], False)
         self.assertEqual(data["message"], "Not found")
     
-     # Delete a different book in each attempt
-    def test_delete_plant(self):
-        res = self.client().delete("/plants/6")
+
+    def search_plants(self):
+        res = self.client().post("/plants", json={"search":"hjvh"})
         data = json.loads(res.data)
-        plant = Plants.query.filter(Plants.id == 6).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data["success"], True)
-        self.assertEqual(data["deleted_plant"], 6)
         self.assertTrue(data["total_plants"])
-        self.assertTrue(len(data["plants"]))
-        self.assertEqual(plant, None)
+        self.assertEqual(len(data["plants"]), 1)
 
-    def test_422_if_book_does_not_exist(self):
-        res = self.client().delete("/plants/1000")
+    
+    def test_get_plant_search_without_results(self):
+        res = self.client().post("/plants", json={"search": "kjkj"})
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(data["success"], False)
-        self.assertEqual(data["message"], "unprocessable")
-    
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertEqual(data["total_plants"], 0)
+        self.assertEqual(len(data["plants"]), 0)
+
     def test_update_plants(self):
 
         res = self.client().patch("/plants/10", json={"name":"hvjh","is_poisonous": True, "primary_color":"white", "scientific_name":"askjckjashk"})
@@ -80,7 +79,30 @@ class PlantTestCase(unittest.TestCase):
         self.assertEqual(data["success"], False)
         self.assertEqual(data["message"], "bad request")
 
-    def test_create_new_book(self):
+    
+     # Delete a different book in each attempt
+    def test_delete_plant(self):
+        res = self.client().delete("/plants/9")
+        data = json.loads(res.data)
+        plant = Plants.query.filter(Plants.id == 9).one_or_none()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertEqual(data["deleted_plant"], 9)
+        self.assertTrue(data["total_plants"])
+        self.assertTrue(len(data["plants"]))
+        self.assertEqual(plant, None)
+
+    def test_422_if_book_does_not_exist(self):
+        res = self.client().delete("/plants/1000")
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data["success"], False)
+        self.assertEqual(data["message"], "unprocessable")
+    
+  
+    def test_create_new_plant(self):
         res = self.client().post("/plants", json=self.new_plant)
         data = json.loads(res.data)
 

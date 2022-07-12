@@ -90,22 +90,32 @@ def create_app(test_config=None):
         name = data["name"]
         poisonous = data["is_poisonous"]
         primary_color = data["primary_color"]
-        scientific_name = data["scientific_name"]
-       
-        
+        scientific_name = data["scientific_name"]    
+        search = data["search"]
         try:
-            plant = Plants(name=name, scientific_name=scientific_name, is_poisonous=poisonous,primary_color=primary_color )
-            plant.insert()
-            selection = Plants.query.order_by(Plants.id).all()
-            formatted_plants = paginate(request, selection)
-            return jsonify({
-                "success":True,
-                "message":"Created",
-                "plants":formatted_plants,
-                "page":page_num,
-                "total_plants": len(Plants.query.all())
-            })
+            if search:
+                selection = Plants.query.order_by(Plants.id).filter(Plants.name.ilike('%{}%'.format(search)))
+                formatted_plants = paginate(request, selection)
+                return jsonify({
+                    "success": True,
+                    "plants":formatted_plants,
+                    "page":page_num,
+                    "total_plants": len(selection.all())
+                })
+            else:
+                plant = Plants(name=name, scientific_name=scientific_name, is_poisonous=poisonous,primary_color=primary_color )
+                plant.insert()
+                selection = Plants.query.order_by(Plants.id).all()
+                formatted_plants = paginate(request, selection)
+                return jsonify({
+                    "success":True,
+                    "message":"Created",
+                    "plants":formatted_plants,
+                    "page":page_num,
+                    "total_plants": len(Plants.query.all())
+                })
         except Exception as e:
+            print(data)
             print(e)
             abort(422)
 
