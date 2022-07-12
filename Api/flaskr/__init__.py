@@ -43,7 +43,7 @@ def create_app(test_config=None):
             "success":True,
             "plants":formatted_plants,
             "page":page_num,
-            "total_plant": len(Plants.query.all())
+            "total_plants": len(Plants.query.all())
         })
 
     @app.route('/plants/<int:plant_id>')
@@ -61,6 +61,54 @@ def create_app(test_config=None):
                 'plant': plant.format()
             })
     
+ 
+    @app.route('/plants/<int:plant_id>', methods =['DELETE'])
+    def delete_plants(plant_id):
+     
+        try:
+            plant = Plants.query.filter(Plants.id == plant_id).one_or_none()
+            if plant is None:
+                abort(404)
+            
+            plant.delete()
+            selection = Plants.query.order_by(Plants.id).all()
+            formatted_plants = paginate(request, selection)
+            return jsonify({
+                'success':True,
+                'deleted_plant': plant.id,
+                "plants":formatted_plants,
+                "page":page_num,
+                "total_plants": len(Plants.query.all())
+            })
+        except:
+            abort(422)
+
+    @app.route('/plants', methods=['POST'])
+    def create_plants():
+      
+        data = request.get_json()
+        name = data["name"]
+        poisonous = data["is_poisonous"]
+        primary_color = data["primary_color"]
+        scientific_name = data["scientific_name"]
+       
+        
+        try:
+            plant = Plants(name=name, scientific_name=scientific_name, is_poisonous=poisonous,primary_color=primary_color )
+            plant.insert()
+            selection = Plants.query.order_by(Plants.id).all()
+            formatted_plants = paginate(request, selection)
+            return jsonify({
+                "success":True,
+                "message":"Created",
+                "plants":formatted_plants,
+                "page":page_num,
+                "total_plants": len(Plants.query.all())
+            })
+        except Exception as e:
+            print(e)
+            abort(422)
+
     @app.route('/plants/<int:plant_id>', methods =['PATCH'])
     def update_plants(plant_id):
         data = request.get_json()
@@ -82,52 +130,7 @@ def create_app(test_config=None):
         except Exception as e:
             abort(400)
 
-    @app.route('/plants/<int:plant_id>', methods =['DELETE'])
-    def delete_plants(plant_id):
-     
-        try:
-            plant = Plants.query.filter(Plants.id == plant_id).one_or_none()
-            if plant is None:
-                abort(404)
-            
-            plant.delete()
-            selection = Plants.query.order_by(Plants.id).all()
-            formatted_plants = paginate(request, selection)
-            return jsonify({
-                'success':True,
-                'deleted_plant': plant.id,
-                "plants":formatted_plants,
-                "page":page_num,
-                "total_plant": len(Plants.query.all())
-            })
-        except:
-            abort(422)
-
-    @app.route('/plants', methods=['POST'])
-    def create_plants():
-      
-        data = request.get_json()
-        name = data["name"]
-        poisonous = data["is_poisonous"]
-        primary_color = data["primary_color"]
-        scientific_name = data["scientific_name"]
-       
-        
-        try:
-            plant = Plants(name=name, scientific_name=scientific_name, is_poisonous=poisonous,primary_color=primary_color )
-            plant.insert()
-            selection = Plants.query.order_by(Plants.id).all()
-            formatted_plants = paginate(request, selection)
-            return jsonify({
-                'success':True,
-                "plants":formatted_plants,
-                "page":page_num,
-                "total_plant": len(Plants.query.all())
-            })
-        except Exception as e:
-            print(e)
-            abort(422)
-
+    
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({
