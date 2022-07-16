@@ -96,7 +96,7 @@ def create_app(test_config=None):
         
         for category in categories:
             categories_list[category.id] = category.type
-  
+
         return jsonify({
             "success": True,
             "categories" : categories_list,
@@ -114,18 +114,21 @@ def create_app(test_config=None):
     """
     @app.route("/questions/<int:id>", methods=["DELETE"])
     def delete_question(id):
+        try:
+            question = Question.query.filter(Question.id == id).one_or_none()
 
-        question = Question.query.filter(Question.id == id).one_or_none()
-
-        if question is None:
-            abort(404)
-        
-        question.delete()
-
-        return jsonify({
-            "success": True,
-            "deleted_question": id
-        })
+            if question is None:
+                abort(404)
+            
+            question.delete()
+            
+            return jsonify({
+                "success": True,
+                "deleted_question": question.id
+            })
+        except Exception as e:
+            print(e)
+            abort(422)
 
     """
     @TODO:
@@ -189,16 +192,11 @@ def create_app(test_config=None):
                 selection = Question.query.filter(Question.question.ilike(f'%{search}%')).all()
                 results = paginate(request, selection)
 
-            else:
-                return jsonify({
-                    'success': True,
-                    'questions': results["questions"]
-                })
-            
-
             return jsonify({
-                'success': True,
-                'questions': results["questions"]
+                "success": True,
+                "questions": results["questions"],
+                "total_page": results["total_page"],
+                "total_questions": results["total_questions"],
             })
 
         except Exception as e:
@@ -257,7 +255,6 @@ def create_app(test_config=None):
             
             if category['type'] == 'click':
                 available_questions = Question.query.filter(Question.id.notin_((previous_questions))).all()
-        
             else:
                 available_questions = Question.query.filter_by(category=category['id']).filter(Question.id.notin_((previous_questions))).all()
 
@@ -267,7 +264,8 @@ def create_app(test_config=None):
                 'success': True,
                 'question': new_question
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     """
