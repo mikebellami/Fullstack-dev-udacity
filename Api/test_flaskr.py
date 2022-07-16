@@ -62,9 +62,9 @@ class PlantTestCase(unittest.TestCase):
 
     def test_update_plants(self):
 
-        res = self.client().patch("/plants/10", json={"name":"hvjh","is_poisonous": True, "primary_color":"white", "scientific_name":"askjckjashk"})
+        res = self.client().patch("/plants/20", json={"name":"hvjh","is_poisonous": True, "primary_color":"white", "scientific_name":"askjckjashk"})
         data = json.loads(res.data)
-        plant = Plants.query.filter(Plants.id == 10).one_or_none()
+        plant = Plants.query.filter(Plants.id == 20).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data["success"], True)
@@ -82,13 +82,13 @@ class PlantTestCase(unittest.TestCase):
     
      # Delete a different book in each attempt
     def test_delete_plant(self):
-        res = self.client().delete("/plants/9")
+        res = self.client().delete("/plants/10")
         data = json.loads(res.data)
-        plant = Plants.query.filter(Plants.id == 9).one_or_none()
+        plant = Plants.query.filter(Plants.id == 10).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data["success"], True)
-        self.assertEqual(data["deleted_plant"], 9)
+        self.assertEqual(data["deleted_plant"], 10)
         self.assertTrue(data["total_plants"])
         self.assertTrue(len(data["plants"]))
         self.assertEqual(plant, None)

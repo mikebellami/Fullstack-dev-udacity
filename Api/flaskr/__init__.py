@@ -24,7 +24,7 @@ def create_app(test_config=None):
     setup_db(app)
     #CORS(app, resources={r"*/api/*" : {origins: '*'}})
     CORS(app)
-
+    
     @app.after_request
     def after_request(response):
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization, true')
@@ -94,7 +94,13 @@ def create_app(test_config=None):
         search = data["search"]
         try:
             if search:
-                selection = Plants.query.order_by(Plants.id).filter(Plants.name.ilike('%{}%'.format(search)))
+                selection = Plants.query.filter(
+                    Plants.name.ilike(f"%{search}%")
+                )
+                return jsonify({
+                    "here":selection
+                })
+               # selection = Plants.query.order_by(Plants.id).filter(Plants.name.ilike(f"%{}%".format(search))).all()
                 formatted_plants = paginate(request, selection)
                 return jsonify({
                     "success": True,
