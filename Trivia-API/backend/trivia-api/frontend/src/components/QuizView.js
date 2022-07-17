@@ -109,7 +109,6 @@ class QuizView extends Component {
           </div>
           {Object.keys(this.state.categories).map((id) => {
             return (
-
               <div
                 key={id}
                 value={id}

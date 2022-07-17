@@ -99,12 +99,12 @@ class TriviaTestCase(unittest.TestCase):
      # Delete a different book in each attempt
     def test_delete_question(self):
     
-        res = self.client().delete("/questions/25")
+        res = self.client().delete("/questions/6")
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data["success"], True)
-        self.assertEqual(data["deleted_question"], 25)
+        self.assertEqual(data["deleted_question"], 6)
     
     def test_422_if_question_does_not_exist(self):
         res = self.client().delete("/questions/1000")
@@ -144,9 +144,9 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_get_quiz(self):
 
-        quiz = {"previous_questions": [ 26, 25], "quiz_category": {
-            "type": "History", "id": 4}}
-        res = self.client().post("/quizzes", json=quiz)
+        quiz_round = {"previous_questions": [], "quiz_category": {
+            "type": "art", "id": 16}}
+        res = self.client().post("/quizzes", json=quiz_round)
         data = json.loads(res.data)
 
         # check status code and success message
