@@ -116,10 +116,10 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_create_new_question(self):
         new_question={
-            'question': 'Who invented the personal computer?',
-            'answer': 'Steve Wozniak',
-            'category': 4,
-            'difficulty': 2
+           "question":"Who invented the personal computer?",
+           "answer":"Steve Wozniak",
+           "category": 4,
+           "difficulty": 2
         }
         res = self.client().post("/questions", json=new_question)
         data = json.loads(res.data)
@@ -130,10 +130,10 @@ class TriviaTestCase(unittest.TestCase):
     
     def test_405_if_questions_creation_not_allowed(self):
         new_question={
-            'question': 'Who invented the personal computer?',
-            'answer': 'Steve Wozniak',
-            'category': 4,
-            'difficulty': 2
+           "question":"Who invented the personal computer?",
+           "answer":"Steve Wozniak",
+           "category": 4,
+           "difficulty": 2
         }
         res = self.client().post("/questions/45", json=new_question)
         data = json.loads(res.data)

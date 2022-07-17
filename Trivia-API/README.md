@@ -14,36 +14,487 @@ That's where you come in! Help them finish the trivia app so they can start hold
 
 Completing this trivia app will give you the ability to structure plan, implement, and test an API - skills essential for enabling your future applications to communicate with others.
 
-## Starting and Submitting the Project
+## Getting Started
+### Installing Dependencies
 
-[Fork](https://help.github.com/en/articles/fork-a-repo) the project repository and [clone](https://help.github.com/en/articles/cloning-a-repository) your forked repository to your machine. Work on the project locally and make sure to push all your changes to the remote repository before submitting the link to your repository in the Classroom.
+Developers should have Python3, pip3, node, and npm installed. 
 
-## About the Stack
+### Frontend dependencies
+#### Installing Node and NPM
 
-We started the full stack application for you. It is designed with some key functional areas:
+This project depends on Nodejs and Node Package Manager (NPM). Find and download Node and npm (which is included) at: [https://nodejs.com/en/download](https://nodejs.org/en/download/).
 
-### Backend
+This project uses NPM to manage software dependencies. NPM Relies on the package.json file located in the `frontend` directory of this repository. After cloning, open your terminal and run:
 
-The [backend](./backend/README.md) directory contains a partially completed Flask and SQLAlchemy server. You will work primarily in `__init__.py` to define your endpoints and can reference models.py for DB and SQLAlchemy setup. These are the files you'd want to edit in the backend:
+```bash
+npm install
+```
+### Backend Dependencies 
 
-1. `backend/flaskr/__init__.py`
-2. `backend/test_flaskr.py`
+Once you have your virtual environment setup and running, install dependencies by navigating to the `/backend` directory and running:
 
-> View the [Backend README](./backend/README.md) for more details.
+```bash
+pip install -r requirements.txt
+```
 
-### Frontend
+## Running Your Frontend in Dev Mode
 
-The [frontend](./frontend/README.md) directory contains a complete React frontend to consume the data from the Flask server. If you have prior experience building a frontend application, you should feel free to edit the endpoints as you see fit for the backend you design. If you do not have prior experience building a frontend application, you should read through the frontend code before starting and make notes regarding:
+The frontend app was built using create-react-app. In order to run the app in development mode use ```npm start```. You can change the script in the ```package.json``` file. 
 
-1. What are the end points and HTTP methods the frontend is expecting to consume?
-2. How are the requests from the frontend formatted? Are they expecting certain parameters or payloads?
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser. The page will reload if you make edits.<br>
 
-Pay special attention to what data the frontend is expecting from each API response to help guide how you format your API. The places where you may change the frontend behavior, and where you should be looking for the above information, are marked with `TODO`. These are the files you'd want to edit in the frontend:
+```bash
+npm start
+```
 
-1. `frontend/src/components/QuestionView.js`
-2. `frontend/src/components/FormView.js`
-3. `frontend/src/components/QuizView.js`
+## Database Setup
+With Postgres running, restore a database using the trivia.psql file provided. From the backend folder in terminal run:
+```bash
+psql trivia < trivia.psql
+```
 
-By making notes ahead of time, you will practice the core skill of being able to read and understand code and will have a simple plan to follow to build out the endpoints of your backend API.
+## Running the server
 
-> View the [Frontend README](./frontend/README.md) for more details.
+From within the `backend` directory first ensure you are working using your created virtual environment.
+
+To run the server, execute:
+
+```bash
+export FLASK_APP=flaskr
+export FLASK_ENV=development
+flask run
+```
+
+## Testing
+To run the tests, run
+```
+dropdb trivia_test
+createdb trivia_test
+psql trivia_test < trivia.psql
+python test_flaskr.py
+``` 
+
+## API Reference
+
+### Error Handling
+Errors are returned in the following json format:
+```
+{
+    'success': False,
+    'error': 404,
+    'message': ' Not found.'
+}
+```
+The API returns 4 types of errors:
+- 400: bad request
+- 404: not found
+- 422: unprocessable
+- 405: method not allowed
+
+### Endpoints
+
+##### GET '/categories'
+- Returns a list of categories, success value
+- Results are paginated in groups of 10. Include a request argument to choose page number, starting from 1.
+- Example: ```curl http://127.0.0.1:5000/categories```
+```
+{
+  "categories": {
+    "1": "Science", 
+    "2": "Art", 
+    "3": "Geography", 
+    "4": "History", 
+    "5": "Entertainment", 
+    "6": "Sports"
+  }, 
+  "success": true
+}
+```
+##### GET '/questions'
+- Returns list of questions, categories and paginate in groups of 10
+- Example: ```curl http://127.0.0.1:5000/questions```
+```
+{
+    "categories": {
+        "1": "Science",
+        "2": "Art",
+        "3": "Geography",
+        "4": "History",
+        "5": "Entertainment",
+        "6": "Sports"
+    },
+    "questions": [
+        {
+            "answer": "Apollo 13",
+            "category": 5,
+            "difficulty": 4,
+            "id": 2,
+            "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+        },
+        {
+            "answer": "Tom Cruise",
+            "category": 5,
+            "difficulty": 4,
+            "id": 4,
+            "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+        },
+        {
+            "answer": "Maya Angelou",
+            "category": 4,
+            "difficulty": 2,
+            "id": 5,
+            "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+        },
+        {
+            "answer": "Edward Scissorhands",
+            "category": 5,
+            "difficulty": 3,
+            "id": 6,
+            "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+        },
+        {
+            "answer": "Muhammad Ali",
+            "category": 4,
+            "difficulty": 1,
+            "id": 9,
+            "question": "What boxer's original name is Cassius Clay?"
+        },
+        {
+            "answer": "Brazil",
+            "category": 6,
+            "difficulty": 3,
+            "id": 10,
+            "question": "Which is the only team to play in every soccer World Cup tournament?"
+        },
+        {
+            "answer": "Uruguay",
+            "category": 6,
+            "difficulty": 4,
+            "id": 11,
+            "question": "Which country won the first ever soccer World Cup in 1930?"
+        },
+        {
+            "answer": "George Washington Carver",
+            "category": 4,
+            "difficulty": 2,
+            "id": 12,
+            "question": "Who invented Peanut Butter?"
+        },
+        {
+            "answer": "The Palace of Versailles",
+            "category": 3,
+            "difficulty": 3,
+            "id": 14,
+            "question": "In which royal palace would you find the Hall of Mirrors?"
+        },
+        {
+            "answer": "Agra",
+            "category": 3,
+            "difficulty": 2,
+            "id": 15,
+            "question": "The Taj Mahal is located in which Indian city?"
+        }
+    ],
+    "success": true,
+    "total_page": "1 of 3",
+    "total_questions": 22
+}
+```
+##### GET '/questions?page=${page_num}'
+- Paginate to the next page by passing page number
+- Example: ```curl http://127.0.0.1:5000/questions?page=2``
+```
+{
+    "categories": {
+        "1": "Science",
+        "2": "Art",
+        "3": "Geography",
+        "4": "History",
+        "5": "Entertainment",
+        "6": "Sports"
+    },
+    "questions": [
+        {
+            "answer": "Escher",
+            "category": 2,
+            "difficulty": 1,
+            "id": 16,
+            "question": "Which Dutch graphic artist–initials M C was a creator of optical illusions?"
+        },
+        {
+            "answer": "Mona Lisa",
+            "category": 2,
+            "difficulty": 3,
+            "id": 17,
+            "question": "La Giaconda is better known as what?"
+        },
+        {
+            "answer": "One",
+            "category": 2,
+            "difficulty": 4,
+            "id": 18,
+            "question": "How many paintings did Van Gogh sell in his lifetime?"
+        },
+        {
+            "answer": "Jackson Pollock",
+            "category": 2,
+            "difficulty": 2,
+            "id": 19,
+            "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
+        },
+        {
+            "answer": "The Liver",
+            "category": 1,
+            "difficulty": 4,
+            "id": 20,
+            "question": "What is the heaviest organ in the human body?"
+        },
+        {
+            "answer": "Alexander Fleming",
+            "category": 1,
+            "difficulty": 3,
+            "id": 21,
+            "question": "Who discovered penicillin?"
+        },
+        {
+            "answer": "Blood",
+            "category": 1,
+            "difficulty": 4,
+            "id": 22,
+            "question": "Hematology is a branch of medicine involving the study of what?"
+        },
+        {
+            "answer": "Scarab",
+            "category": 4,
+            "difficulty": 4,
+            "id": 23,
+            "question": "Which dung beetle was worshipped by the ancient Egyptians?"
+        },
+        {
+            "answer": "Ronaldo",
+            "category": 4,
+            "difficulty": 4,
+            "id": 24,
+            "question": "best player in the world"
+        },
+        {
+            "answer": "Ronaldso",
+            "category": 4,
+            "difficulty": 4,
+            "id": 25,
+            "question": "best player in the world"
+        }
+    ],
+    "success": true,
+    "total_page": "2 of 3",
+    "total_questions": 22
+```
+##### DELETE '/questions/int:id'
+- Deletes selected question by id
+- Example: ```curl -X DELETE http://127.0.0.1:5000/questions/32```
+```
+{
+    "deleted_question": 32,
+    "success": true
+}
+```
+
+##### POST '/questions'
+- Create a new question. The new question must have all four information. 
+- Example: ```curl -X POST - H "Content-Type: application/json" -d '{"question": "Who invented the personal computer?", "answer": "Steve Wozniak",  "category": "4", "difficulty": 2}' http://127.0.0.1:5000/questions```
+- Created question:
+```
+{
+    "question":"Who invented the personal computer?",
+    "answer":"Steve Wozniak",
+    "category": 4,
+    "difficulty": 2
+}
+```
+- JSON response
+```
+{
+    "created": 26,
+    "questions": [
+        {
+            "answer": "Apollo 13",
+            "category": 5,
+            "difficulty": 4,
+            "id": 2,
+            "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+        },
+        {
+            "answer": "Tom Cruise",
+            "category": 5,
+            "difficulty": 4,
+            "id": 4,
+            "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+        },
+        {
+            "answer": "Maya Angelou",
+            "category": 4,
+            "difficulty": 2,
+            "id": 5,
+            "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+        },
+        {
+            "answer": "Edward Scissorhands",
+            "category": 5,
+            "difficulty": 3,
+            "id": 6,
+            "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+        },
+        {
+            "answer": "Muhammad Ali",
+            "category": 4,
+            "difficulty": 1,
+            "id": 9,
+            "question": "What boxer's original name is Cassius Clay?"
+        },
+        {
+            "answer": "Brazil",
+            "category": 6,
+            "difficulty": 3,
+            "id": 10,
+            "question": "Which is the only team to play in every soccer World Cup tournament?"
+        },
+        {
+            "answer": "Uruguay",
+            "category": 6,
+            "difficulty": 4,
+            "id": 11,
+            "question": "Which country won the first ever soccer World Cup in 1930?"
+        },
+        {
+            "answer": "George Washington Carver",
+            "category": 4,
+            "difficulty": 2,
+            "id": 12,
+            "question": "Who invented Peanut Butter?"
+        },
+        {
+            "answer": "The Palace of Versailles",
+            "category": 3,
+            "difficulty": 3,
+            "id": 14,
+            "question": "In which royal palace would you find the Hall of Mirrors?"
+        },
+        {
+            "answer": "Agra",
+            "category": 3,
+            "difficulty": 2,
+            "id": 15,
+            "question": "The Taj Mahal is located in which Indian city?"
+        }
+    ],
+    "success": true,
+    "total_page": "1 of 3",
+    "total_questions": 21
+}
+
+```
+
+##### POST '/questions/search'
+- Search for a question using the submitted search term
+- Returns a JSON object with paginated questions matching the search term
+- Example: ```curl -X POST -H "Content-Type: application/json" -d '{"searchTerm": "Who invented the personal computer?"}' http://127.0.0.1:5000/questions/search```
+
+```
+{
+    "questions": [
+        {
+            "answer": "Steve Wozniak",
+            "category": 1,
+            "difficulty": 2,
+            "id": 33,
+            "question": "Who invented the personal computer?"
+        }
+    ],
+    "success": true,
+    "total_page": "1 of 1",
+    "total_questions": 1
+}
+```
+
+##### GET '/categories/int:id/questions'
+- Get questions only in a specific category
+- Example: ```curl http://127.0.0.1:5000/categories/4/questions```
+
+```
+{
+    "questions": [
+        {
+            "answer": "Maya Angelou",
+            "category": 4,
+            "difficulty": 2,
+            "id": 5,
+            "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+        },
+        {
+            "answer": "Muhammad Ali",
+            "category": 4,
+            "difficulty": 1,
+            "id": 9,
+            "question": "What boxer's original name is Cassius Clay?"
+        },
+        {
+            "answer": "George Washington Carver",
+            "category": 4,
+            "difficulty": 2,
+            "id": 12,
+            "question": "Who invented Peanut Butter?"
+        },
+        {
+            "answer": "Scarab",
+            "category": 4,
+            "difficulty": 4,
+            "id": 23,
+            "question": "Which dung beetle was worshipped by the ancient Egyptians?"
+        },
+        {
+            "answer": "Ronaldo",
+            "category": 4,
+            "difficulty": 4,
+            "id": 24,
+            "question": "best player in the world"
+        },
+        {
+            "answer": "Ronaldso",
+            "category": 4,
+            "difficulty": 4,
+            "id": 25,
+            "question": "best player in the world"
+        },
+        {
+            "answer": "Ronaldso",
+            "category": 4,
+            "difficulty": 4,
+            "id": 26,
+            "question": "best player in the world"
+        }
+    ],
+    "success": true,
+    "total_page": "1 of 1",
+    "total_questions": 7
+}
+```
+
+##### POST '/quizzes'
+- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
+- Example: ```curl -X POST -H "Content-Type: application/json" -d '{"previous_questions": [], "quiz_category": {"type": "Geography", "id": "3"}}' http://127.0.0.1:5000/quizzes```
+```
+{
+    "question": {
+        "answer": "The Palace of Versailles",
+        "category": 3,
+        "difficulty": 3,
+        "id": 14,
+        "question": "In which royal palace would you find the Hall of Mirrors?"
+    },
+    "success": true
+}
+```
+## Author and Acknowledgement
+- The project and other files are credicted to [Udacity](https://www.udacity.com/)
+Footer
+© 2022 GitHub, Inc.
