@@ -149,7 +149,6 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().post("/quizzes", json=quiz)
         data = json.loads(res.data)
 
-        # check status code and success message
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data["success"], True)
 

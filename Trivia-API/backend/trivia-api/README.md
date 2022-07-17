@@ -481,7 +481,7 @@ The API returns 4 types of errors:
 
 ##### POST '/quizzes'
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
-- Example: ```curl -X POST -H "Content-Type: application/json" -d '{"previous_questions": [], "quiz_category": {"type": "Geography", "id": "3"}}' http://127.0.0.1:5000/quizzes```
+- Example: ```curl -X POST -H "Content-Type: application/json" -d '{"previous_questions": [15], "quiz_category": {"type": "Geography", "id": "3"}}' http://127.0.0.1:5000/quizzes```
 ```
 {
     "question": {
