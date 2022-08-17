@@ -5,6 +5,7 @@ from flask import Flask, jsonify, request, abort
 from models import setup_db, Plants
 from flask_cors import CORS
 import math
+from functools import wraps
 
 list_plant_per_page = 5
 def paginate(request, selection):
@@ -19,6 +20,28 @@ def paginate(request, selection):
 
     return current_plants
 
+def get_token_auth_header():
+    # check if authorization is not in request
+    if 'Authorization' not in request.headers:
+        abort(401)
+    # get the token   
+    auth_header = request.headers['Authorization']
+    header_parts = auth_header.split(' ')
+    # check if token is valid
+    if len(header_parts) != 2:
+        abort(401)
+    elif header_parts[0].lower() != 'bearer':
+        abort(401) 
+    return header_parts[1]
+
+def requires_auth(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        jwt = get_token_auth_header()
+        print(jwt)
+        return f(jwt, *args, **kwargs)
+    return wrapper
+
 def create_app(test_config=None):
     app = Flask(__name__)
     setup_db(app)
@@ -30,6 +53,12 @@ def create_app(test_config=None):
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization, true')
         response.headers.add('Access-Control-Allow-Headers', 'GET, POST, PATCH, DELETE, OPTIONS')
         return response
+   
+    @app.route('/headers')
+    @requires_auth
+    def headers(jwt):
+        print(jwt)
+        return "not implemented"
 
     @app.route('/plants')
     def get_plants():
@@ -147,36 +176,36 @@ def create_app(test_config=None):
             abort(400)
 
     
-    @app.errorhandler(404)
-    def not_found(error):
-        return jsonify({
-            "success": False, 
-            "error": 404,
-            "message": "Not found"
-            }), 404
+    # @app.errorhandler(404)
+    # def not_found(error):
+    #     return jsonify({
+    #         "success": False, 
+    #         "error": 404,
+    #         "message": "Not found"
+    #         }), 404
 
-    @app.errorhandler(422)
-    def unprocessable(error):
-        return jsonify({
-        "success": False, 
-        "error": 422,
-        "message": "unprocessable"
-        }), 422
+    # @app.errorhandler(422)
+    # def unprocessable(error):
+    #     return jsonify({
+    #     "success": False, 
+    #     "error": 422,
+    #     "message": "unprocessable"
+    #     }), 422
 
-    @app.errorhandler(405)
-    def not_found(error):
-        return jsonify({
-        "success": False, 
-        "error": 405,
-        "message": "method not allowed"
-        }), 405
+    # @app.errorhandler(405)
+    # def not_found(error):
+    #     return jsonify({
+    #     "success": False, 
+    #     "error": 405,
+    #     "message": "method not allowed"
+    #     }), 405
 
-    @app.errorhandler(400)
-    def bad_request(error):
-        return jsonify({
-        "success": False, 
-        "error": 400,
-        "message": "bad request"
-        }), 400
+    # @app.errorhandler(400)
+    # def bad_request(error):
+    #     return jsonify({
+    #     "success": False, 
+    #     "error": 400,
+    #     "message": "bad request"
+    #     }), 400
 
     return app
